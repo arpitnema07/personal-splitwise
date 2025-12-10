@@ -4,7 +4,7 @@ motor
 python-jose[cryptography]
 pydantic[email]
 passlib[bcrypt]
-bcrypt==3.2.0
+bcrypt==3.1.7
 python-multipart
 email-validator
 python-dotenv
