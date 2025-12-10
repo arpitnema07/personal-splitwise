@@ -1,5 +1,10 @@
 from dotenv import load_dotenv
 from pathlib import Path
+import sys
+import os
+
+# Fix for Vercel: Add current directory to sys.path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Load env before other imports
 env_path = Path(__file__).resolve().parent.parent / ".env"
@@ -9,7 +14,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import connect_to_mongo, close_mongo_connection
 from auth import router as auth_router
-from groups import router as groups_router
 from groups import router as groups_router
 from expenses import router as expenses_router
 from users import router as users_router
