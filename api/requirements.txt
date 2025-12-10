@@ -3,8 +3,7 @@ uvicorn
 motor
 python-jose[cryptography]
 pydantic[email]
-passlib[bcrypt]
-bcrypt==3.1.7
+bcrypt
 python-multipart
 email-validator
 python-dotenv
