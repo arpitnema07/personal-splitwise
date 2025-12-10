@@ -1,0 +1,5 @@
+api/__pycache__
+api/venv
+client/node_modules
+client/dist
+
