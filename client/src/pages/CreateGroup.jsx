@@ -24,7 +24,7 @@ function CreateGroup() {
   return (
     <div className="container">
       <button onClick={() => navigate(-1)} className="btn-ghost gap-2 mb-6">
-        <ArrowLeft size={20} /> Back
+        <ArrowLeft size={20} />
       </button>
 
       <div className="card max-w-lg mx-auto">

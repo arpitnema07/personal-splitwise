@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Home, PlusCircle, User, Users, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import Avatar from './Avatar';
 
 const Layout = () => {
   const location = useLocation();
@@ -28,20 +29,7 @@ const Layout = () => {
               <Users size={20} /> Join Group
            </Link>
            <Link to="/profile" className={`nav-item ${isActive('/profile') ? 'active' : ''}`}>
-              {user && user.avatar ? (
-                  user.avatar.match(/^http/) ? 
-                  <img 
-                    src={user.avatar} 
-                    alt="Profile" 
-                    className="w-8 h-8 rounded-full object-cover border border-[var(--border-color)] block" 
-                    style={{ width: '32px', height: '32px', minWidth: '32px', minHeight: '32px', objectFit: 'cover' }}
-                  /> : 
-                  <div className="w-8 h-8 flex items-center justify-center bg-[var(--bg-input)] rounded-full text-xs border border-[var(--border-color)] shrink-0" style={{ width: '32px', height: '32px' }}>
-                    {user.avatar}
-                  </div>
-              ) : (
-                  <User size={20} />
-              )} 
+              <Avatar user={user} size="w-8 h-8" />
               Profile
            </Link>
         </nav>
@@ -73,20 +61,7 @@ const Layout = () => {
            <span>Join</span>
         </Link>
         <Link to="/profile" className={`mobile-nav-item ${isActive('/profile') ? 'active' : ''}`}>
-           {user && user.avatar ? (
-               user.avatar.match(/^http/) ? 
-               <img 
-                    src={user.avatar} 
-                    alt="Profile" 
-                    className="w-8 h-8 rounded-full object-cover border border-[var(--border-color)] block"
-                    style={{ width: '32px', height: '32px', minWidth: '32px', minHeight: '32px', objectFit: 'cover' }}
-               /> : 
-               <div className="w-8 h-8 flex items-center justify-center bg-[var(--bg-input)] rounded-full text-xs border border-[var(--border-color)] shrink-0" style={{ width: '32px', height: '32px' }}>
-                    {user.avatar}
-               </div>
-           ) : (
-               <User size={24} />
-           )}
+           <Avatar user={user} size="w-8 h-8" />
            <span>Profile</span>
         </Link>
         <button onClick={() => { logout(); window.location.href = '/login'; }} className="mobile-nav-item">
@@ -97,5 +72,6 @@ const Layout = () => {
     </div>
   );
 };
+
 
 export default Layout;

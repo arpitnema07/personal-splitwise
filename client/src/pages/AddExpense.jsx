@@ -165,7 +165,7 @@ function AddExpense() {
             <button onClick={() => navigate(-1)} className="btn-ghost" aria-label="Go Back">
                 <ArrowLeft size={24} />
             </button>
-            <h1 className="text-2xl font-bold mb-0">{isEditMode ? 'Edit Expense' : 'Add Expense'}</h1>
+            <h1 className="text-3xl font-bold relative">{isEditMode ? 'Edit Expense' : 'Add Expense'}</h1>
          </div>
          {isEditMode && (
              <button onClick={handleDelete} className="btn-ghost text-[var(--error)] hover:bg-[rgba(255,82,82,0.1)]">

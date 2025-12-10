@@ -3,6 +3,7 @@ import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import { User, Save, Trash2, LogOut, Lock, Upload } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import Avatar from '../components/Avatar';
 
 function UserProfile() {
   const [user, setUser] = useState(null);
@@ -69,17 +70,8 @@ function UserProfile() {
 
       <div className="card shadow-lg p-4 mb-6">
         <div className="flex flex-col items-center mb-6">
-            <div className="w-8 h-8 rounded-full bg-[var(--bg-input)] flex items-center justify-center text-xs mb-3 border border-[var(--bg-card)] shadow overflow-hidden relative" style={{ width: '32px', height: '32px' }}>
-                {avatar ? (
-                   avatar.match(/^http|\/uploads/) ? (
-                       <img 
-                        src={avatar} 
-                        alt="Avatar" 
-                        className="w-full h-full object-cover block" 
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                       />
-                   ) : <span className="text-sm">{avatar}</span>
-                ) : <User size={16} className="text-[var(--text-muted)]" />}
+            <div className="mb-3">
+                <Avatar user={{ ...user, avatar: avatar }} size="w-20 h-20" fontSize="text-2xl" />
             </div>
             <h2 className="text-xl font-bold">{user.name}</h2>
             <p className="text-[var(--text-muted)]">{user.email}</p>
@@ -94,17 +86,9 @@ function UserProfile() {
             <div className="mb-4">
                 <label className="block text-xs font-bold text-[var(--text-muted)] mb-1">AVATAR</label>
                 <div className="flex gap-3 items-center">
-                     <div className="flex items-center justify-center w-8 h-8 bg-[var(--bg-input)] rounded-full text-2xl border border-[var(--border-color)] overflow-hidden shrink-0 relative" style={{ width: '32px', height: '32px' }}>
-                        {avatar ? (
-                           avatar.match(/^http|\/uploads/) ? (
-                               <img 
-                                src={avatar} 
-                                alt="Avatar" 
-                                className="w-full h-full object-cover block" 
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                               />
-                           ) : <span className="text-sm">{avatar}</span>
-                        ) : <User size={16} className="text-[var(--text-muted)]" />}
+                     <div className="shrink-0">
+                         {/* Preview using current avatar state input */}
+                         <Avatar user={{ name: name || 'User', avatar: avatar }} size="w-8 h-8" />
                      </div>
                      <div className="flex-1 flex gap-2">
                          <input 

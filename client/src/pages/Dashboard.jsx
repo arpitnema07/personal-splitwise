@@ -3,6 +3,7 @@ import api from '../api';
 import { Link } from 'react-router-dom';
 import { PlusCircle, Users, ArrowRight, Activity, TrendingUp, DollarSign } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import Avatar from '../components/Avatar';
 
 function Dashboard() {
   const [groups, setGroups] = useState([]);
@@ -35,32 +36,34 @@ function Dashboard() {
       </div>
 
     {/* Global Stats */}
-    {/* Global Stats */}
       {/* Overall Net Balance Banner */}
       {stats.net_balance !== undefined && Math.abs(stats.net_balance) >= 0.01 && (
-          <div 
-            className="mb-6 p-4 rounded-xl border flex items-center gap-4"
-            style={{ 
-                backgroundColor: stats.net_balance > 0 ? "rgba(34, 197, 94, 0.1)" : "rgba(239, 68, 68, 0.1)",
-                borderColor: stats.net_balance > 0 ? "rgba(34, 197, 94, 0.2)" : "rgba(239, 68, 68, 0.2)"
-            }}
-          >
-            <div 
-                className="rounded-full flex items-center justify-center font-bold text-2xl text-white"
-                style={{ 
-                    backgroundColor: stats.net_balance > 0 ? "#22c55e" : "#ef4444",
-                    width: '48px', height: '48px', minWidth: '48px'
-                }}
-            >
-                {stats.net_balance > 0 ? "+" : "-"}
-            </div>
-            <p 
-                className="text-lg font-bold leading-none" 
-                style={{ color: stats.net_balance > 0 ? "#22c55e" : "#ef4444", margin: 0 }}
-            >
-                Overall, {stats.net_balance > 0 ? "you are owed" : "you owe"} <span className="text-2xl ml-1">${Math.abs(stats.net_balance).toLocaleString()}</span>
-            </p>
-          </div>
+          (() => {
+            const isPositive = stats.net_balance > 0;
+            const color = isPositive ? "#22c55e" : "#ef4444";
+            const bgColor = isPositive ? "rgba(34, 197, 94, 0.1)" : "rgba(239, 68, 68, 0.1)";
+            const borderColor = isPositive ? "rgba(34, 197, 94, 0.2)" : "rgba(239, 68, 68, 0.2)";
+            
+            return (
+              <div 
+                className="mb-6 p-4 rounded-xl border flex items-center gap-4"
+                style={{ backgroundColor: bgColor, borderColor: borderColor }}
+              >
+                <div 
+                    className="rounded-full flex items-center justify-center font-bold text-2xl text-white w-12 h-12 min-w-12"
+                    style={{ backgroundColor: color }}
+                >
+                    {isPositive ? "+" : "-"}
+                </div>
+                <p 
+                    className="text-lg font-bold leading-none m-0"
+                    style={{ color: color }}
+                >
+                    Overall, {isPositive ? "you are owed" : "you owe"} <span className="text-2xl ml-1">${Math.abs(stats.net_balance).toLocaleString()}</span>
+                </p>
+              </div>
+            );
+          })()
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -147,20 +150,7 @@ function Dashboard() {
           {groups.map((group) => (
             <Link key={group._id} to={`/groups/${group._id}`} className="card flex items-center justify-between hover:border-[var(--primary)] transition-all no-underline p-4 group">
               <div className="flex items-center gap-4">
-                 <div className="w-8 h-8 bg-gradient-to-br from-[var(--bg-input)] to-[var(--bg-main)] rounded-full flex items-center justify-center text-xs font-bold border border-[var(--border-color)] overflow-hidden shrink-0 relative" style={{ width: '32px', height: '32px' }}>
-                    {group.icon ? (
-                       group.icon.match(/^http|\/uploads/) ? (
-                           <img 
-                            src={group.icon} 
-                            alt={group.name} 
-                            className="w-full h-full object-cover block"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                           />
-                       ) : <span className="text-sm">{group.icon}</span>
-                    ) : (
-                       group.name.charAt(0).toUpperCase()
-                    )}
-                 </div>
+                 <Avatar user={{...group, avatar: group.icon}} size="w-8 h-8" />
                  <div>
                     <h3 className="text-lg font-bold mb-1 group-hover:text-[var(--primary)] transition-colors">{group.name}</h3>
                     <p className="text-xs text-[var(--text-muted)] flex items-center gap-2">

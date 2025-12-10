@@ -80,7 +80,7 @@ function GroupSettings() {
     <div className="container pb-20">
       <div className="flex items-center gap-2 mb-6">
         <button onClick={() => navigate(`/groups/${groupId}`)} className="btn-ghost gap-2">
-            <ArrowLeft size={20} /> Back
+            <ArrowLeft size={20} />
         </button>
         <h1 className="text-2xl font-bold mb-0">Group Settings</h1>
       </div>

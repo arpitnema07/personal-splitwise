@@ -3,7 +3,12 @@ from jose import jwt
 from datetime import datetime, timedelta
 import os
 
-SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
+# SECURITY WARNING: Don't run with debug turned on in production!
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    # Fallback only for local dev convenience, warn in logs
+    print("WARNING: SECRET_KEY not set in environment. Using unsafe default.")
+    SECRET_KEY = "unsafe_dev_secret_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 

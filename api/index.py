@@ -1,16 +1,20 @@
 from dotenv import load_dotenv
 from pathlib import Path
-import sys
-import os
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+import logging
 
-# Fix for Vercel: Add current directory to sys.path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Load env before other imports
 env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from database import connect_to_mongo, close_mongo_connection
 from auth import router as auth_router
@@ -19,11 +23,26 @@ from expenses import router as expenses_router
 from users import router as users_router
 from upload import router as upload_router
 
+# Initialize Limiter
+limiter = Limiter(key_func=get_remote_address, default_limits=["200/minute"])
+
 app = FastAPI()
+
+# Add rate limiter
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
+
+# SECURITY: Define allowed origins. Update this list for production!
+origins = [
+    "http://localhost:5173",  # Vite local dev
+    "http://localhost:3000",  # React default
+    "https://personal-splitwise.vercel.app",  # Add your production domain here
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

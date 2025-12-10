@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
-import { PlusCircle, User, Share2, ArrowLeft, Receipt, RefreshCw, Edit2, Settings } from 'lucide-react';
+import { PlusCircle, Share2, ArrowLeft, Receipt, RefreshCw, Settings, User } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, Tooltip } from 'recharts';
+import Avatar from '../components/Avatar';
+import SettleUpModal from '../components/SettleUpModal';
 
 function GroupDetails() {
   const { id } = useParams();
@@ -42,29 +44,7 @@ function GroupDetails() {
     return member || { name: 'Unknown', avatar: null };
   };
 
-  const renderAvatar = (user, size = "w-8 h-8", fontSize = "text-xs") => {
-      // Determines pixel size for strict inline styling based on Tailwind class
-      const pxSize = size.includes("w-4") ? "16px" : "32px";
-      const style = { width: pxSize, height: pxSize, minWidth: pxSize, minHeight: pxSize, objectFit: 'cover' };
-      const containerStyle = { width: pxSize, height: pxSize, minWidth: pxSize, minHeight: pxSize };
 
-      if (user.avatar) {
-          return user.avatar.match(/^http|\/uploads/) ? 
-            <img 
-                src={user.avatar} 
-                alt={user.name} 
-                className={`${size} rounded-full object-cover border border-[var(--border-color)] block`} 
-                style={style} 
-            /> :
-            <div className={`${size} bg-[var(--bg-input)] rounded-full flex items-center justify-center ${fontSize} border border-[var(--border-color)] shrink-0 text-[var(--text-main)]`} style={containerStyle}>{user.avatar}</div>;
-      }
-      // Default fallback if no avatar is set - show User icon
-      return (
-        <div className={`${size} bg-[var(--bg-input)] rounded-full flex items-center justify-center border border-[var(--border-color)] text-[var(--text-muted)] shrink-0`} style={containerStyle}>
-            <User size={size.includes("w-4") ? 10 : 16} />
-        </div>
-      );
-  };
 
   const handleShare = () => {
     if (!group) return;
@@ -157,20 +137,7 @@ function GroupDetails() {
                 <ArrowLeft size={24} />
             </Link>
             <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 bg-gradient-to-br from-[var(--bg-input)] to-[var(--bg-main)] rounded-full flex items-center justify-center text-xs font-bold border border-[var(--border-color)] overflow-hidden shrink-0 relative" style={{ width: '32px', height: '32px' }}>
-                    {group.icon ? (
-                       group.icon.match(/^http/) ? (
-                           <img 
-                            src={group.icon} 
-                            alt={group.name} 
-                            className="w-full h-full object-cover block"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                           />
-                       ) : <span className="text-sm">{group.icon}</span>
-                    ) : (
-                       group.name.charAt(0).toUpperCase()
-                    )}
-                 </div>
+                 <Avatar user={group} size="w-8 h-8" />
                  <h1 className="text-2xl font-bold m-0 leading-none">{group.name}</h1>
             </div>
         </div>
@@ -212,7 +179,7 @@ function GroupDetails() {
         if (Math.abs(netBalance) < 0.01) return null; // Settled up
 
         const isPositive = netBalance > 0;
-        const color = isPositive ? "#22c55e" : "#ef4444"; // dim green/red
+        const color = isPositive ? "#22c55e" : "#ef4444";
         const bgColor = isPositive ? "rgba(34, 197, 94, 0.1)" : "rgba(239, 68, 68, 0.1)";
         const borderColor = isPositive ? "rgba(34, 197, 94, 0.2)" : "rgba(239, 68, 68, 0.2)";
         const icon = isPositive ? "+" : "-";
@@ -220,94 +187,44 @@ function GroupDetails() {
 
         return (
             <div 
-                className="mb-6 p-4 rounded-xl border flex items-center gap-4"
+                className="mb-6 p-4 rounded-xl border flex items-center gap-4 justify-between"
                 style={{ backgroundColor: bgColor, borderColor: borderColor }}
             >
-                <div 
-                    className="rounded-full flex items-center justify-center font-bold text-2xl text-white"
-                    style={{ backgroundColor: color, width: '48px', height: '48px', minWidth: '48px' }}
-                >
-                    {icon}
+                <div className="flex items-center gap-4 flex-1">
+                    <div 
+                        className="rounded-full flex items-center justify-center font-bold text-2xl text-white w-12 h-12 min-w-12 shrink-0"
+                        style={{ backgroundColor: color }}
+                    >
+                        {icon}
+                    </div>
+                    <p className="text-lg font-bold leading-none m-0" style={{ color: color }}>
+                        Overall, {text} <span className="text-2xl ml-1">${Math.abs(netBalance).toFixed(2)}</span>
+                    </p>
                 </div>
-                <p className="text-lg font-bold leading-none" style={{ color: color, margin: 0 }}>
-                    Overall, {text} <span className="text-2xl ml-1">${Math.abs(netBalance).toFixed(2)}</span>
-                </p>
                 
-                {/* Settle Up Button if negative balance */}
-                {!isPositive && (
                     <button 
                         onClick={openSettleUp}
-                        className="ml-auto btn"
-                        style={{ 
-                            backgroundColor: 'white', 
-                            color: '#ef4444', 
-                            width: 'auto', 
-                            padding: '8px 16px',
-                            border: '1px solid currentColor' 
-                        }}
+                        className="btn bg-white text-red-500 px-3 py-1 text-sm border border-current hover:bg-red-50 shrink-0"
+                        style={{ width: 'auto' }}
                     >
                         Settle Up
                     </button>
-                )}
             </div>
         );
       })()}
 
       {/* Settle Up Modal */}
-      {settleModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="card w-full max-w-md p-6 shadow-2xl relative animate-in zoom-in-95 duration-200 border border-[var(--border-color)]">
-                <button 
-                    onClick={() => setSettleModalOpen(false)}
-                    className="absolute top-4 right-4 btn-icon"
-                >
-                    ✕
-                </button>
-                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                    <RefreshCw size={24} className="text-green-500" /> Settle Up
-                </h2>
-                <form onSubmit={handleSettleUpSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-xs font-bold uppercase text-[var(--text-muted)] mb-1">Paying to</label>
-                        <select 
-                            className="input w-full"
-                            value={settleToUser}
-                            onChange={handleRecipientChange}
-                            required
-                        >
-                            {group.members_details
-                                .filter(m => m.id !== (user.id || user._id))
-                                .map(m => (
-                                    <option key={m.id} value={m.id}>{m.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-xs font-bold uppercase text-[var(--text-muted)] mb-1">Amount</label>
-                        <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-bold">$</span>
-                            <input 
-                                type="number" 
-                                step="0.01"
-                                className="input w-full pl-8 font-mono text-lg"
-                                value={settleAmount}
-                                onChange={(e) => setSettleAmount(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
-                    <div className="pt-2">
-                        <button type="submit" className="btn btn-primary w-full py-3 text-lg">
-                            Record Payment
-                        </button>
-                    </div>
-                    <p className="text-xs text-[var(--text-muted)] text-center mt-2">
-                        This will create a payment expense record.
-                    </p>
-                </form>
-            </div>
-        </div>
-      )}
+      {/* Settle Up Modal */}
+      <SettleUpModal 
+        isOpen={settleModalOpen}
+        onClose={() => setSettleModalOpen(false)}
+        onSubmit={handleSettleUpSubmit}
+        settleToUser={settleToUser}
+        setSettleToUser={handleRecipientChange}
+        settleAmount={settleAmount}
+        setSettleAmount={setSettleAmount}
+        members={group.members_details.filter(m => m.id !== (user.id || user._id))}
+      />
 
       {/* Tabs - Segmented Control */}
       <div className="segmented-control mb-6 grid grid-cols-3">
@@ -352,7 +269,7 @@ function GroupDetails() {
                         <h4 className="font-bold m-0">{exp.description}</h4>
                         <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mt-1">
                              <div className="flex items-center gap-1">
-                                {renderAvatar(getMemberData(exp.payer_id), "w-4 h-4", "text-[8px]")}
+                                <Avatar user={getMemberData(exp.payer_id)} size="w-4 h-4" fontSize="text-[8px]" />
                                 <span className="font-bold text-[var(--text-main)]">{getMemberData(exp.payer_id).name}</span>
                              </div>
                             <span>paid ${exp.amount}</span>
@@ -383,7 +300,7 @@ function GroupDetails() {
                <div key={idx} className="balance-item">
                     <div className="balance-user flex flex-col items-center">
                         <div className="mb-2">
-                             {renderAvatar(fromUser, "w-8 h-8")}
+                             <Avatar user={fromUser} size="w-8 h-8" />
                         </div>
                         <span className="text-xs font-bold truncate w-full px-1">{fromUser.name}</span>
                    </div>
@@ -403,7 +320,7 @@ function GroupDetails() {
 
                     <div className="balance-user flex flex-col items-center">
                          <div className="mb-2">
-                             {renderAvatar(toUser, "w-8 h-8")}
+                             <Avatar user={toUser} size="w-8 h-8" />
                         </div>
                         <span className="text-xs font-bold truncate w-full px-1">{toUser.name}</span>
                    </div>

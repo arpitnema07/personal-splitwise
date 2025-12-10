@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "splitwise-api"
+version = "1.0.0"
+description = "Backend API for Splitwise Clone"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "motor",
+    "python-jose[cryptography]",
+    "pydantic[email]",
+    "passlib[bcrypt]",
+    "python-multipart",
+    "email-validator",
+    "python-dotenv",
+    "slowapi"
+]
