@@ -59,7 +59,7 @@ function Dashboard() {
                     className="text-lg font-bold leading-none m-0"
                     style={{ color: color }}
                 >
-                    Overall, {isPositive ? "you are owed" : "you owe"} <span className="text-2xl ml-1">${Math.abs(stats.net_balance).toLocaleString()}</span>
+                    Overall, {isPositive ? "you are owed" : "you owe"} <span className="text-2xl ml-1">₹{Math.abs(stats.net_balance).toLocaleString()}</span>
                 </p>
               </div>
             );
@@ -75,7 +75,7 @@ function Dashboard() {
                        <span className="text-xs text-[var(--text-muted)] font-bold uppercase tracking-wider">Total Paid</span>
                    </div>
                    <div className="text-2xl font-bold text-[var(--text-main)]">
-                       ${stats.total_paid?.toLocaleString() ?? 0}
+                       ₹{stats.total_paid?.toLocaleString() ?? 0}
                    </div>
                </div>
 
@@ -86,7 +86,7 @@ function Dashboard() {
                        <span className="text-xs text-[var(--text-muted)] font-bold uppercase tracking-wider">My Share</span>
                    </div>
                    <div className="text-2xl font-bold text-[var(--text-main)]">
-                       ${stats.total_spent?.toLocaleString() ?? 0}
+                       ₹{stats.total_spent?.toLocaleString() ?? 0}
                    </div>
                </div>
            </div>

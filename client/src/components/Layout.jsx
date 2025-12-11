@@ -9,9 +9,27 @@ const Layout = () => {
   const { logout, user } = useAuth();
 
   const isActive = (path) => location.pathname === path;
+  
+  const [isOffline, setIsOffline] = React.useState(!navigator.onLine);
+
+  React.useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   return (
-    <div className="layout-container">
+    <div className="layout-container relative">
+       {isOffline && (
+        <div className="fixed top-0 left-0 right-0 bg-yellow-600 text-white text-xs font-bold text-center py-1 z-[9999]">
+            YOU ARE OFFLINE - Changes will sync when connected
+        </div>
+      )}
       {/* Desktop Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-header">

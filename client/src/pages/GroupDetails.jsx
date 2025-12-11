@@ -198,7 +198,7 @@ function GroupDetails() {
                         {icon}
                     </div>
                     <p className="text-lg font-bold leading-none m-0" style={{ color: color }}>
-                        Overall, {text} <span className="text-2xl ml-1">${Math.abs(netBalance).toFixed(2)}</span>
+                        Overall, {text} <span className="text-2xl ml-1">₹{Math.abs(netBalance).toFixed(2)}</span>
                     </p>
                 </div>
                 
@@ -272,13 +272,13 @@ function GroupDetails() {
                                 <Avatar user={getMemberData(exp.payer_id)} size="w-4 h-4" fontSize="text-[8px]" />
                                 <span className="font-bold text-[var(--text-main)]">{getMemberData(exp.payer_id).name}</span>
                              </div>
-                            <span>paid ${exp.amount}</span>
+                            <span>paid ₹{exp.amount}</span>
                             {exp.category && <span>• {exp.category}</span>}
                         </div>
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
-                    <span className="font-mono font-bold text-lg">${exp.amount}</span>
+                    <span className="font-mono font-bold text-lg">₹{exp.amount}</span>
                 </div>
               </div>
             ))
@@ -313,7 +313,7 @@ function GroupDetails() {
                    </div>
 
                    <div className="balance-amount bg-[var(--bg-input)] text-[var(--text-main)] px-3 py-1 rounded-md text-sm font-mono font-bold mx-2">
-                       ${settlement.amount}
+                       ₹{settlement.amount}
                    </div>
                    
                    <div className="balance-arrow px-2 rotate-180 opacity-0"></div>

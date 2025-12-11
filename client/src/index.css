@@ -16,6 +16,9 @@
   --header-height: 60px;
   --sidebar-width: 260px;
   --nav-height: 60px;
+  
+  /* Browser Native Dark Mode */
+  color-scheme: dark;
 }
 
 * {
@@ -138,6 +141,7 @@ input, select {
   background: var(--bg-input); border: 2px solid transparent;
   color: var(--text-main); border-radius: var(--radius); font-size: 1rem;
   transition: all 0.2s;
+  color-scheme: dark;
 }
 input:focus, select:focus {
   border-color: var(--primary); background: var(--bg-main); outline: none;

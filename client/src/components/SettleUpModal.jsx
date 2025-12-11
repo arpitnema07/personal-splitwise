@@ -33,7 +33,7 @@ const SettleUpModal = ({ isOpen, onClose, onSubmit, settleToUser, setSettleToUse
                     <div>
                         <label className="block text-xs font-bold uppercase text-[var(--text-muted)] mb-1">Amount</label>
                         <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-bold">$</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] font-bold">₹</span>
                             <input 
                                 type="number" 
                                 step="0.01"

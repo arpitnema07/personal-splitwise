@@ -12,6 +12,7 @@ function AddExpense() {
   const [amount, setAmount] = useState('');
   const [payerId, setPayerId] = useState('');
   const [category, setCategory] = useState('General');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [tags, setTags] = useState('');
   
   const [splitType, setSplitType] = useState('equal');
@@ -45,6 +46,7 @@ function AddExpense() {
           setAmount(exp.amount);
           setPayerId(exp.payer_id);
           setCategory(exp.category || "General");
+          if(exp.date) setDate(new Date(exp.date).toISOString().split('T')[0]);
           setTags(exp.tags ? exp.tags.join(', ') : '');
           
           // Reconstruct split state... tricky but simple heuristic for now:
@@ -137,6 +139,7 @@ function AddExpense() {
         payer_id: payerId,
         group_id: groupId,
         category,
+        date: new Date(date),
         tags: tags.split(',').map(t => t.trim()).filter(t => t),
         split_details: splitDetails
       };
@@ -183,7 +186,7 @@ function AddExpense() {
 
         <div className="grid grid-cols-2 gap-3 mb-3">
             <div>
-                 <label className="text-xs font-bold text-[var(--text-muted)] mb-1 block">AMOUNT ($)</label>
+                 <label className="text-xs font-bold text-[var(--text-muted)] mb-1 block">AMOUNT (₹)</label>
                  <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" className="text-xl font-bold font-mono mb-0" />
             </div>
             <div>
@@ -194,6 +197,19 @@ function AddExpense() {
             </div>
         </div>
         
+
+        
+        <div className="mb-3">
+             <label className="text-xs font-bold text-[var(--text-muted)] mb-1 block">DATE</label>
+             <input 
+                type="date" 
+                value={date} 
+                onChange={e => setDate(e.target.value)} 
+                className="mb-0" 
+                required
+             />
+        </div>
+
         <div className="mb-3">
              <label className="text-xs font-bold text-[var(--text-muted)] mb-1 block">TAGS</label>
              <input type="text" value={tags} onChange={e => setTags(e.target.value)} placeholder="e.g. friday, drinks" className="mb-0" />
@@ -242,7 +258,7 @@ function AddExpense() {
                             <>
                                 {splitType === 'equal' && (
                                     <span className="text-sm font-mono text-[var(--text-muted)]">
-                                        ${amount && selectedMembers.length > 0 ? (amount / selectedMembers.length).toFixed(2) : '0.00'}
+                                        ₹{amount && selectedMembers.length > 0 ? (amount / selectedMembers.length).toFixed(2) : '0.00'}
                                     </span>
                                 )}
                                 {splitType === 'exact' && (
